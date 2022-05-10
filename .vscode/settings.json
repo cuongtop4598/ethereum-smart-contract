@@ -1,0 +1,4 @@
+{
+    "solidity.defaultCompiler": "localNodeModule",
+    "solidity.compileUsingLocalVersion": "/Users/cuongnm/Golang/src/github.com/cuongtop4598/ethereum-smart-contract/soljson-v0.8.11+commit.d7f03943.js"
+}
