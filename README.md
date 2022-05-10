@@ -1,2 +1,7 @@
+- Generate abi using solc with specific version of solidity
+  - ex
+      - npm install -g solc@0.6.12
+      - solcjs .\erc20.sol --abi
 - Create Go bindings
   - abigen --sol TokenBalances.sol --pkg fetchtokenbalances --out fetch_token_balance.go
+  - abigen --abi .\__erc20_sol_ERC20.abi --pkg erc20 --out erc20.go

@@ -1,17 +1,16 @@
 package main
 
 import (
-	"encoding/json"
+	"context"
 	"fmt"
 	"io/ioutil"
 	"log"
-	"os"
+	"math/big"
 
 	"github.com/cuongtop4598/Go-Ethereum/client/bindings"
 	"github.com/ethereum/go-ethereum/accounts"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/accounts/keystore"
-	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
 )
 
@@ -101,69 +100,69 @@ func main() {
 
 	// deploy document contract
 	{
-		// chainID := int64(451998)
-		// auth, err := bind.NewKeyStoreTransactorWithChainID(ks, account, big.NewInt(chainID))
-		// if err != nil {
-		// 	log.Fatal(err)
-		// }
-		// fromAddress := account.Address
-		// nonce, err := client.PendingNonceAt(context.Background(), fromAddress)
-		// if err != nil {
-		// 	log.Fatal(err)
-		// }
-		// // gasPrice, err := client.SuggestGasPrice(context.Background())
-		// // if err != nil {
-		// // 	log.Fatal(err)
-		// // }
-
-		// auth.From = account.Address
-		// auth.Nonce = big.NewInt(int64(nonce))
-		// auth.Value = big.NewInt(0)       // in wei
-		// auth.GasLimit = uint64(0x47b760) // in units gas limit: 134217728
-		// auth.GasPrice = big.NewInt(10000)
-
-		// documentAddress, _, _, err := bindings.DeployDocument(auth, client)
+		chainID := int64(451998)
+		auth, err := bind.NewKeyStoreTransactorWithChainID(ks, account, big.NewInt(chainID))
+		if err != nil {
+			log.Fatal(err)
+		}
+		fromAddress := account.Address
+		nonce, err := client.PendingNonceAt(context.Background(), fromAddress)
+		if err != nil {
+			log.Fatal(err)
+		}
+		// gasPrice, err := client.SuggestGasPrice(context.Background())
 		// if err != nil {
 		// 	log.Fatal(err)
 		// }
 
-		// fmt.Println("contract address", documentAddress)
-		// fmt.Println("Deploy done!")
+		auth.From = account.Address
+		auth.Nonce = big.NewInt(int64(nonce))
+		auth.Value = big.NewInt(0)       // in wei
+		auth.GasLimit = uint64(0x47b760) // in units gas limit: 134217728
+		auth.GasPrice = big.NewInt(10000)
+
+		documentAddress, _, _, err := bindings.DeployDocument(auth, client)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		fmt.Println("contract address", documentAddress)
+		fmt.Println("Deploy done!")
 	}
 
 	//create contract instance ============================================================
 
 	{
 
-		contractAddress := common.HexToAddress("0x697FCA08C6F50c8aEc52eA434857d73F2308926A")
-		contract, err := bindings.NewDePocketBridge(contractAddress, client)
-		if err != nil {
-			log.Fatal(err)
-		}
-		userAddress := common.HexToAddress("0x12A065612DC8cD96c1Ad67292f35C5b33F2f9807")
+		// 	contractAddress := common.HexToAddress("0x7c51370813C4a71AC5B2521eB66bAe08a8cc7EDb")
+		// 	contract, err := bindings.NewDePocketBridge(contractAddress, client)
+		// 	if err != nil {
+		// 		log.Fatal(err)
+		// 	}
+		// 	userAddress := common.HexToAddress("0x12A065612DC8cD96c1Ad67292f35C5b33F2f9807")
 
-		addressStr := []string{}
+		// 	addressStr := []string{}
 
-		f, err := os.Open("./token_address.json")
-		if err != nil {
-			log.Fatal(err)
-		}
-		data, err := ioutil.ReadAll(f)
-		if err != nil {
-			log.Fatal(err)
-		}
-		_ = json.Unmarshal(data, &addressStr)
+		// 	f, err := os.Open("./token_address.json")
+		// 	if err != nil {
+		// 		log.Fatal(err)
+		// 	}
+		// 	data, err := ioutil.ReadAll(f)
+		// 	if err != nil {
+		// 		log.Fatal(err)
+		// 	}
+		// 	_ = json.Unmarshal(data, &addressStr)
 
-		commonAddresses := []common.Address{}
-		for _, add := range addressStr {
-			commonAddresses = append(commonAddresses, common.HexToAddress(add))
-		}
+		// 	commonAddresses := []common.Address{}
+		// 	for _, add := range addressStr {
+		// 		commonAddresses = append(commonAddresses, common.HexToAddress(add))
+		// 	}
 
-		amount, err := contract.AllBalancesForManyAccounts(&bind.CallOpts{}, []common.Address{userAddress}, commonAddresses)
-		if err != nil {
-			log.Fatal(err)
-		}
-		fmt.Println(amount)
+		// 	amount, err := contract.AllBalancesForManyAccounts(&bind.CallOpts{}, []common.Address{userAddress}, commonAddresses)
+		// 	if err != nil {
+		// 		log.Fatal(err)
+		// 	}
+		// 	fmt.Println(amount)
 	}
 
 }
